@@ -1,0 +1,124 @@
+
+---
+title: "Term Project Proposal"
+date: "Tuesday, March 21, 2023"
+output:
+  html_document:
+    highlight: tango
+    theme: cosmo
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    collapsed: false
+    smooth_scroll: false
+    df_print: kable
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+<!-- DO NOT EDIT ANYTHING ABOVE THIS LINE -->
+
+# Team info
+
+* Group name: CryptChosen
+* Group members: Josh Braseth, Steven Bogus, Ethan Swaidner
+
+# Purpose
+
+### The research question we will be addressing with our multiple regression model
+Is there a coloration between the inflation and price of fiat currency, and the rise and price of crypto currency?
+
+The `btcdailyprice` dataframe provides a structured format for storing and analyzing Bitcoin's price data over time. We are most interested in the time as our dependent variable, and watching the closing price and volume over time. For an in depth view of the dataframe and all its variables, please consult the documentation on the [cryptchosen repository.](https://github.com/jbraseth/cryptchosen).
+
+From `btcdailyprice` we choose to select the following columns.
+
+- `year`: Year of recording.
+- `month`: Month of recording.
+- `day`: Day of recording.
+- `close`: The price of Bitcoin at the market close (in USD).
+- `volumefrom`: The total volume of Bitcoin traded.
+- `volumeto`: The total value in USD of the volume of Bitcoin traded.
+
+<!-- TODO: DISCUSSION -->
+* Discuss the research question you will be addressing with your multiple regression model.
+
+
+# Load packages and data
+
+1. Load all necessary packages
+1. Load the dataset then run the `clean_names()` function from the `janitor` package then `select()` only the variables you are going to use.
+
+Example:
+
+```{r, fig.width=16, fig.height=9, warning=TRUE}
+# Work from the project directory
+setwd("../")
+
+library(tidyverse)
+library(readr)
+library(janitor)
+library(lubridate)
+
+btc <- read_csv("btcdailyprice.csv") %>%
+  clean_names() %>%
+  select(year:day, volumefrom:close)
+btc$date <- dmy(paste(btc$day, btc$month, btc$year, sep = "-"))
+
+# Show only first 6 rows:
+head(btc)
+```
+
+# Create EDA visualizations
+
+<!-- Instructions: Create "exploratory data analysis" visualizations of your data. At this point
+these are preliminary and can change for the submission, but the only
+requirement is that your visualizations use each of the *measurement variables*
+included in your dataset to test out if they work. -->
+
+<!-- TODO: write about each visualization and whatever insights they communicate. -->
+<!-- TODO: be sure to meet the requirement: **use each of the measurement variables** -->
+
+### Bitcoin Price
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x = date, y = close)) +
+  geom_line() +
+  labs(title = "Bitcoin Price", x = "Date", y = "Closing Price [USD]") +
+  theme_minimal()
+```
+
+### Distribution of Bitcoin Closing Prices
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=close)) +
+  geom_histogram(binwidth = 500, fill="blue", color="black") +
+  labs(title="Distribution of Bitcoin Closing Prices", x="Closing Price", y="Count") +
+  theme_minimal()
+```
+
+### Monthly Variation in Bitcoin Closing Price
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=month, y=close)) +
+  geom_boxplot() +
+  labs(title="Monthly Variation in Bitcoin Closing Price", x="Month", y="Closing Price [USD]") +
+  theme(axis.text.x=element_text(angle=45, hjust=1)) +
+  theme_minimal()
+  btc$cumulative_volume <- cumsum(btc$volumefrom)
+```
+
+### Cumulative Volume of Bitcoin Traded Over Time
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=date, y=cumulative_volume)) +
+  geom_area(fill="green", alpha=0.5) +
+  labs(title="Cumulative Volume of Bitcoin Traded Over Time", x="Date", y="Cumulative Volume Traded") +
+  theme_minimal()
+```
+
+### Trading Volume vs. Closing Price of Bitcoin
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=volumefrom, y=close)) +
+  geom_point(aes(color=close), alpha=0.6) +
+  scale_color_gradient(low="blue", high="red") +
+  labs(title="Trading Volume vs. Closing Price of Bitcoin", x="Volume Traded", y="Closing Price [USD]") +
+  theme_minimal()
+```
