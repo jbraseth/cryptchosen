@@ -1,0 +1,169 @@
+
+---
+title: "Term Project Proposal"
+date: "Wednesday, April 3, 2024"
+output:
+  html_document:
+    highlight: tango
+    theme: cosmo
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    collapsed: false
+    smooth_scroll: false
+    df_print: kable
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+<!-- DO NOT EDIT ANYTHING ABOVE THIS LINE -->
+
+# Team info
+
+* Group name: CryptChosen
+* Group members: Josh Braseth, Steven Bogus, Ethan Swaidner
+
+# Main Question and Purpose
+
+### The research question we will be addressing with our multiple regression model
+**What is the correlation between global economic inflation and the value of Bitcoin?**
+
+The `btcdailyprice` dataframe provides a structured format for storing and analyzing Bitcoin's price data over time. We are most interested in the time as our dependent variable, and watching the closing price and volume over time. For an in depth view of the dataframe and all its variables, please consult the documentation on the [cryptchosen repository.](https://github.com/jbraseth/cryptchosen).
+
+From `btcdailyprice` we choose to select the following columns.
+
+- `year`: Year of recording.
+- `month`: Month of recording.
+- `day`: Day of recording.
+- `close`: The price of Bitcoin at the market close (in USD).
+- `volumefrom`: The total volume of Bitcoin traded.
+- `volumeto`: The total value in USD of the volume of Bitcoin traded.
+
+The `globalinflation` dataframe serves as a resource for analyzing global inflation trends over time. This dataset, sourced from the World Bank's extensive economic [data repositories](https://www.worldbank.org/en/research/brief/inflation-database), offers a detailed view of inflation rates across various countries, providing a macroeconomic context to our analysis. By examining inflation, we can explore potential correlations with Bitcoin's market behavior, offering insights into how global economic conditions might influence cryptocurrency values.
+
+From `globalinflation` we choose to select the following columns.
+
+- `year`: Year of recording.
+- `month`: Month of recording.
+- `country_columns`: A specific country.
+- `global`: The average global inflation rate for each month, derived from country-specific rates within the dataset.
+
+# Discussion
+To answer this question, we will be using our dataset derived from the CryptoCompare API, which shows the price of Bitcoin and its price movements over the past five years. CryptoCompare is an FCA benchmark administrator and is used by some of the largest companies such as Coinbase, and Binance. We will be using their dataset and comparing it to global inflation rates of not just established fiat currencies but other costs that have been inflated within the same period. 
+
+For the other dataset, we explored for the most reputable source and for any additional datasets that are used, the same scrutiny will apply. For the comparison of fiat currency, The World Bank and their dataset ("One-Stop Source: A Global Database of Inflation.") was chosen. The World Bank is an exceptionally reliable source, getting the data for its datasets directly from the government agencies of each country it references. Any other datasets to compare Bitcoin’s price movements and inflation are still being brainstormed, however we have some ideas. So far, the biggest contender is **comparing CryptoCompare’s variable of volume for Bitcoin, and the inflated use of energy globally.** 
+
+These comparisons and additional research intend to answer a few key questions; Is there a clear correlation between Bitcoin’s price and global inflation? If there is, what exactly is the root cause?  Apart from fiat currency, is there any other inflation that may have a direct correlation with the rise of Bitcoin and other cryptocurrency? The answers to these questions could be interesting and open the door to deeper exploration and discussion. To make the comparisons for the project, the volume, and price variables from the CryptoCompare dataset will be primarily used. For comparisons of inflation relating to currency, the price will be primarily used, and for comparisons to other types of inflation, volume will be used. 
+
+We are finding the corresponding variables with the World Bank dataset. It is geared for readability, not statistical analysis, and we are converting it. If we manage to do it before this proposal is due, the EDA will be added to this. We do not have any other dataset now, but there may be others used as the project is in further development.
+
+# Load packages and data
+
+1. Trust that we loaded necessary packages in the backend. We are omitting the R code to show just the EDA.
+1. We also loaded the dataset then run the `clean_names()` function from the `janitor` package then `select()` only the variables we are going to use.
+
+```{r, fig.width=16, fig.height=9, warning=TRUE}
+# Work from the project directory
+setwd("../")
+
+library(tidyverse)
+library(readr)
+library(janitor)
+library(lubridate)
+library(knitr)
+library(kableExtra)
+
+btc <- read_csv("btcdailyprice.csv") %>%
+  clean_names() %>%
+  select(year:day, volumefrom:close)
+btc$date <- dmy(paste(btc$day, btc$month, btc$year, sep = "-"))
+
+head(btc)
+
+globalinflation <- read_csv("globalinflation.csv") %>%
+  clean_names()
+
+globalinflation <- globalinflation %>%
+  mutate(global = rowMeans(select(., -c(month, year)), na.rm = TRUE)) %>%
+  mutate(month = str_replace(month, "Februrary", "February"))
+
+globalinflation$date <- my(paste(globalinflation$month, globalinflation$year, sep = "-"))
+
+# head(globalinflation)
+globalinflation %>%
+  head() %>%
+  kable("html", escape = FALSE) %>%
+  kable_styling(bootstrap_options = c("striped", "hover"), full_width = F) %>%
+  scroll_box(width = "100%", height = "100%")
+```
+
+# Create EDA visualizations
+
+<!-- Create "exploratory data analysis" visualizations of your data. At this point
+these are preliminary and can change for the submission, but the only
+requirement is that your visualizations use each of the *measurement variables*
+included in your dataset to test out if they work. -->
+
+### Bitcoin Price
+We would be remiss if we didn't include a line graph of the closing price of Bitcoin over time. It highlights periods of significant growth or decline, visualizing the trends. Analyzing them can help us understand factors the influence Bitcoin's market value at certain times.
+
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x = date, y = close)) +
+  geom_line() +
+  labs(title = "Bitcoin Price", x = "Date", y = "Closing Price [USD]") +
+  theme_minimal()
+```
+
+### Global Average CPI Inflation (2018-2022)
+This line graph illustrates the global average Consumer Price Index (CPI) inflation over time. By comparing this with Bitcoin's price trends, we can investigate potential correlations between global economic inflation and Bitcoin's value.
+
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(globalinflation, aes(x=date, y=global)) +
+  geom_line() +
+  labs(title="Global Average CPI Inflation over Time", x="Time", y="Global Average CPI Inflation")
+```
+
+### Distribution of Bitcoin Closing Prices
+This histogram shows the distribution of Bitcoin's closing prices. It's an interesting take on visualizing a stock's price, but it helps us understand the variability and the most common price ranges, offering insights into the volatility of the cryptocurrency market.
+
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=close)) +
+  geom_histogram(binwidth = 500, fill="blue", color="black") +
+  labs(title="Distribution of Bitcoin Closing Prices", x="Closing Price", y="Count") +
+  theme_minimal()
+```
+
+### Monthly Variation in Bitcoin Closing Price
+This boxplot breaks down Bitcoin's closing price by month, showing the distribution within each month. It highlights the intra-month variability and may help identify seasonal patterns or anomalies in Bitcoin's price movements.
+
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=month, y=close)) +
+  geom_boxplot() +
+  labs(title="Monthly Variation in Bitcoin Closing Price", x="Month", y="Closing Price [USD]") +
+  theme(axis.text.x=element_text(angle=45, hjust=1)) +
+  theme_minimal()
+  btc$cumulative_volume <- cumsum(btc$volumefrom)
+```
+
+### Cumulative Volume of Bitcoin Traded Over Time
+This area graph depicts the cumulative trading volume of Bitcoin over time. It demonstrates the overall growth in Bitcoin trading activity, which can be an indicator of increasing or decreasing interest in the cryptocurrency. Not much to see here, to be honest!
+
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=date, y=cumulative_volume)) +
+  geom_area(fill="green", alpha=0.5) +
+  labs(title="Cumulative Volume of Bitcoin Traded Over Time", x="Date", y="Cumulative Volume Traded") +
+  theme_minimal()
+```
+
+### Trading Volume vs. Closing Price of Bitcoin
+This scatter plot explores the relationship between the trading volume and the closing price of Bitcoin. By examining how these two variables interact, we can gain insights into market dynamics, such as whether high trading volumes are associated with significant price changes. It would be very interesting to tie the color to another categorical variable, or even the size of the dots to another in order to visualize and communicate a lot of
+
+```{r, fig.width=8, fig.height=4.5, warning=TRUE}
+ggplot(btc, aes(x=volumefrom, y=close)) +
+  geom_point(aes(color=close), alpha=0.6) +
+  scale_color_gradient(low="blue", high="red") +
+  labs(title="Trading Volume vs. Closing Price of Bitcoin", x="Volume Traded", y="Closing Price [USD]") +
+  theme_minimal()
+```
