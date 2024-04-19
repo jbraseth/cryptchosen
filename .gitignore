@@ -1,4 +1,6 @@
 .Rdata
 .Rhistory
 .Rproj.user
+.venv
 docs/*.html
+python/SECRET
