@@ -1,0 +1,75 @@
+---
+title: "Final Project Name"
+author: "CRYPTCHOSEN"
+date: "Friday, May 3, 2024"
+output:
+  html_document:
+    highlight: tango
+    theme: cosmo
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    collapsed: false
+    smooth_scroll: false
+    df_print: kable
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+<!-- DO NOT EDIT ANYTHING ABOVE THIS LINE -->
+
+```{r setup, include=FALSE}
+# tidyverse does not work on my machine, so we need to install the packages separately
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(infer)
+library(lubridate)
+library(janitor)
+library(knitr)
+```
+
+## 1 Introduction
+
+
+## 2 Exploratory data analysis
+```{r}
+# loading btc data set
+btc <- read_csv("../btcdailyprice.csv") %>%
+  clean_names() %>%
+  select(year:day, volumefrom:close)
+
+# make single column date
+btc$date <- dmy(paste(btc$day, btc$month, btc$year, sep = "-"))
+
+# loading inflation data set
+globalinflation <- read_csv("../globalinflation.csv") %>%
+  clean_names()
+
+# compute G7 monthly inflation average
+globalinflation <- globalinflation %>%
+  mutate(global = rowMeans(select(globalinflation, united_states, united_kingdom, canada, france, germany, italy, japan), na.rm = TRUE))
+
+# make single column date
+globalinflation$date <- my(paste(globalinflation$month, globalinflation$year, sep = "-"))
+```
+
+
+## 3 Multiple regression
+
+
+### 3.1 Statistical interpretation
+
+### 3.2 Non-statistical interpretation
+
+
+## 4 Inference for multiple regression
+
+
+## 5 Conclusion
+
+
+## 6 Citations and references
