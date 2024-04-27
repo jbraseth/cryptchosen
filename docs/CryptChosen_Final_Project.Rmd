@@ -30,6 +30,7 @@ library(infer)
 library(lubridate)
 library(janitor)
 library(knitr)
+library(moderndive)
 ```
 
 ## 1 Introduction
@@ -40,7 +41,7 @@ library(knitr)
 # loading btc data set
 btc <- read_csv("../btcdailyprice.csv") %>%
   clean_names() %>%
-  select(year:day, volumefrom:close)
+  select(year:day, open:close)
 
 # make single column date
 btc$date <- dmy(paste(btc$day, btc$month, btc$year, sep = "-"))
@@ -51,7 +52,7 @@ globalinflation <- read_csv("../globalinflation.csv") %>%
 
 # compute G7 monthly inflation average
 globalinflation <- globalinflation %>%
-  mutate(global = rowMeans(select(globalinflation, united_states, united_kingdom, canada, france, germany, italy, japan), na.rm = TRUE))
+  mutate(g7 = rowMeans(select(globalinflation, united_states, united_kingdom, canada, france, germany, italy, japan), na.rm = TRUE))
 
 # make single column date
 globalinflation$date <- my(paste(globalinflation$month, globalinflation$year, sep = "-"))
@@ -59,6 +60,14 @@ globalinflation$date <- my(paste(globalinflation$month, globalinflation$year, se
 
 
 ## 3 Multiple regression
+```{r}
+# interpolate g7 average monthly inflation to daily in order to match frequency with btc data
+interpolated_g7 <- approx(globalinflation$date, globalinflation$g7, xout = btc$date)$y
+
+# multiple regression model
+btc_model <- lm(btc$close ~ interpolated_g7 + btc$date)
+get_regression_table(btc_model)
+```
 
 
 ### 3.1 Statistical interpretation
