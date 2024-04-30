@@ -76,12 +76,6 @@ print(globalinflation_sample)
 The CryptoCompare dataset had a sample size of 5586 for the daily price of BTC from 2009 to the present. The World Bank database, filtering out everything but the G7 countries, had a sample size of 1092, 156 for each country, or one data point a month from 2010 to 2023. We were luckily able to use every single data point and did not have to remove any from either sample.
 
 ```{r}
-{include=FALSE}
-# loading btc data set
-btc <- read_csv("../btcdailyprice.csv") %>%
-  clean_names() %>%
-  select(year:day, open:close)
-
 # remove days before btc was first traded
 btc <- slice(btc, (561):nrow(btc))
 
@@ -98,7 +92,6 @@ globalinflation <- globalinflation %>%
 
 # make single column date
 globalinflation$date <- my(paste(globalinflation$month, globalinflation$year, sep = "-"))
-
 
 ```
 
