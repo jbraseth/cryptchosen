@@ -42,11 +42,11 @@ library(moderndive)
 
 # 1. Introduction
 
-Cryptocurrency, and in particular Bitcoin, has come a long way from its mediocre rise in the early 2010's. What was once considered a waste of money, and not highly regarded, has dramatically increasted in price and now is staple of the online space and modern world. As bitcoin contiues its rise, its important to consider that the global economy as a whole is declining, as inflation rates continue to climb. Our project investigates whether theres a coorelation between global economic inflation and the value of Bitcoin - and if there is one, what exactly is the coorelation that can be drawn?
+Cryptocurrency, and in particular Bitcoin, has come a long way from its mediocre rise in the early 2010's. What was once considered a waste of money, and not highly regarded, has dramatically increased in price and now is staple of the online space and modern world. As bitcoin continues its rise, it's important to consider that the global economy as a whole is declining, as inflation rates continue to climb. Our project investigates whether there's a correlation between global economic inflation and the value of Bitcoin - and if there is one, what exactly is the correlation that can be drawn?
 
-To answer this question, we will be using our data set derived from the CryptoCompare API<a href="https://min-api.cryptocompare.com/documentation?key=Historical&cat=dataHistoday">³</a>, which shows the price of Bitcoin and its price movements over the past ten years. CryptoCompare is an FCA benchmark administrator<a href="https://finance.yahoo.com/news/cryptocompare-gets-fca-authorization-operate-125346571.html">²</a> and is used by some of the largest companies such as Coinbase, and Binance. We will be using their dataset and analyzing Bitcoin daily closing price and trading volume variables in relation to global inflation metrics derived from per-country month-over-month changes in the Consumer Price Index (CPI). The inflation data we will be comaring it to is provided by The World Bank from their database<a href="https://www.worldbank.org/en/research/brief/inflation-database ">¹</a>. The World Bank is an exceptionally reliable source, getting the data for its datasets directly from the government agencies of each country it references. The data for this dataset was updated April 2024. 
+To answer this question, we will be using our data set derived from the CryptoCompare API<a href="https://min-api.cryptocompare.com/documentation?key=Historical&cat=dataHistoday">³</a>, which shows the price of Bitcoin and its price movements over the past ten years. CryptoCompare is an FCA benchmark administrator<a href="https://finance.yahoo.com/news/cryptocompare-gets-fca-authorization-operate-125346571.html">²</a> and is used by some of the largest companies such as Coinbase, and Binance. We will be using their dataset and analyzing Bitcoin daily closing price and trading volume variables in relation to global inflation metrics derived from per-country month-over-month changes in the Consumer Price Index (CPI). The inflation data we will be comparing it to is provided by The World Bank from their database<a href="https://www.worldbank.org/en/research/brief/inflation-database ">¹</a>. The World Bank is an exceptionally reliable source, getting the data for its datasets directly from the government agencies of each country it references. The data for this dataset was updated April 2024. 
 
-We decided to focus on the inflation of g7 countries as they have the most stable and advanced economies, account for more than a third of the global GDP<a href="https://www.bbc.com/news/world-49434667">⁴</a>, and are great points of reference of the global economy as a whole. Another thing that is important to note is that unlike most projects, we will be comparing 2 numeric values instead.
+We decided to focus on the inflation of G7 countries as they have the most stable and advanced economies, account for more than a third of the global GDP<a href="https://www.bbc.com/news/world-49434667">⁴</a>, and are great points of reference of the global economy as a whole. Another thing that is important to note is that unlike most projects, we will be comparing 2 numeric values instead.
 
 Here is a snapshot of 5 randomly chosen rows of the data set we’ll use from the CryptoCompare dataset:
 ```{r}
@@ -58,7 +58,7 @@ btc_sample <- btc %>% sample_n(5)
 print(btc_sample)
 ```
 
-Here is a snapshot of 5 randomly chosen rows of the filtered data set (Only g7 countries) we’ll use from the World Bank dataset:
+Here is a snapshot of 5 randomly chosen rows of the filtered data set (only G7 countries) we’ll use from the World Bank dataset:
 ```{r}
 globalinflation <- read_csv("../globalinflation.csv") %>%
   clean_names()
@@ -73,7 +73,7 @@ print(globalinflation_sample)
 
 # 2. Exploratory data analysis
 
-The Cyprtocompare dataset had a sample size of 5586 for the daily price of BTC from 2009 to the present. The World Bank database, filtering out everything but the g7 countires, had a sample size of 1092, 156 for each country, or one data point a month from 2010 to 2023. We were luckily able to use every single data point and did not have to remove any from either sample.
+The CryptoCompare dataset had a sample size of 5586 for the daily price of BTC from 2009 to the present. The World Bank database, filtering out everything but the G7 countries, had a sample size of 1092, 156 for each country, or one data point a month from 2010 to 2023. We were luckily able to use every single data point and did not have to remove any from either sample.
 
 ```{r}
 {include=FALSE}
@@ -181,7 +181,7 @@ ggplot(btc, aes(x=volumefrom, y=close)) +
 
 <br>
 
-Figure 5 is a scatter plot that explores the relationship between the trading volume and the closing price of Bitcoin. By examining how these two variables interact, we can gain insights into market dynamics, such as whether high trading volumes are associated with significant price changes. It would be very interesting to tie the color to another categorical variable, or even the size of the dots to another in order to visualize and communicate a lot of
+Figure 5 is a scatter plot that explores the relationship between the trading volume and the closing price of Bitcoin. By examining how these two variables interact, we can gain insights into market dynamics, such as whether high trading volumes are associated with significant price changes. It would be very interesting to tie the color to another categorical variable, or even the size of the dots to another in order to visualize and communicate a lot of information.
 
 <br>
 
@@ -212,7 +212,7 @@ ggplot(combined_data, aes(x = date, y = value)) +
 
 <p style="text-align: center;">Figure 6 - Bitcoin Price and Global Average CPI Inflation</p> 
 
-And lastly, Figure 6 is 2 line graphs on the same plane that directly show Bitcoin's Price and the Global Average CPI Inflationside by side. We thought it would be interesting to directly compare Bitcoin's Price and Average Inflation. Having these two values side by side can let us draw some basic correlations, and see if there seems to be any relationships between the two. If there are jumps in both in around the same time frame it could mean there is a relationship. Especially in the most recent years, we can see a major jump at around the same time. 
+And lastly, Figure 6 is 2 line graphs on the same plane that directly show Bitcoin's Price and the Global Average CPI Inflation side by side. We thought it would be interesting to directly compare Bitcoin's Price and Average Inflation. Having these two values side by side can let us draw some basic correlations, and see if there seems to be any relationships between the two. If there are jumps in both in around the same time frame it could mean there is a relationship. Especially in the most recent years, we can see a major jump at around the same time. 
 
 # 3 Multiple regression
 ```{r}
@@ -284,15 +284,15 @@ ggplot(data = reg_points, aes(x = date, y = residual)) +
 
 ## 5.1 - Conclusions
 
-Conclusion. Was there a corelation?
+Conclusion. Was there a correlation?
 
 ## 5.2 - Limitations
 
-What the limitations we had
+Limitations we had
 
 ## 5.3 - Further questions
 
-Questions the data makes us have
+Questions the data provokes
 
 
 # 6. Citations and References
