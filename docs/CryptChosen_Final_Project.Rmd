@@ -50,7 +50,7 @@ We decided to focus on the inflation of g7 countries as they have the most stabl
 
 Here is a snapshot of 5 randomly chosen rows of the data set we’ll use from the CryptoCompare dataset:
 ```{r}
-btc <- read_csv("btcdailyprice.csv") %>%
+btc <- read_csv("../btcdailyprice.csv") %>%
   clean_names() %>%
   select(year:day, open:close)
 set.seed(123) 
@@ -60,7 +60,7 @@ print(btc_sample)
 
 Here is a snapshot of 5 randomly chosen rows of the filtered data set (Only g7 countries) we’ll use from the World Bank dataset:
 ```{r}
-globalinflation <- read_csv("globalinflation.csv") %>%
+globalinflation <- read_csv("../globalinflation.csv") %>%
   clean_names()
 globalinflation <- globalinflation %>%
   mutate(g7 = rowMeans(select(globalinflation, united_states, united_kingdom, canada, france, germany, italy, japan), na.rm = TRUE))
