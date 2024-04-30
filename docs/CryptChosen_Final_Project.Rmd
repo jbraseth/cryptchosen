@@ -1,0 +1,135 @@
+---
+title: "Final Project Name"
+author: "CRYPTCHOSEN"
+date: "Friday, May 3, 2024"
+output:
+  html_document:
+    highlight: tango
+    theme: cosmo
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    collapsed: false
+    smooth_scroll: false
+    df_print: kable
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, message = FALSE)
+```
+
+<!-- DO NOT EDIT ANYTHING ABOVE THIS LINE -->
+
+```{r setup, include=FALSE}
+# tidyverse does not work on my machine, so we need to install the packages separately
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(readr)
+library(infer)
+library(lubridate)
+library(janitor)
+library(knitr)
+library(moderndive)
+```
+
+## 1 Introduction
+
+
+## 2 Exploratory data analysis
+```{r}
+# loading btc data set
+btc <- read_csv("../btcdailyprice.csv") %>%
+  clean_names() %>%
+  select(year:day, open:close)
+
+# remove days before btc was first traded
+btc <- slice(btc, (561):nrow(btc))
+
+# make single column date
+btc$date <- dmy(paste(btc$day, btc$month, btc$year, sep = "-"))
+
+# loading inflation data set
+globalinflation <- read_csv("../globalinflation.csv") %>%
+  clean_names()
+
+# compute G7 monthly inflation average
+globalinflation <- globalinflation %>%
+  mutate(g7 = rowMeans(select(globalinflation, united_states, united_kingdom, canada, france, germany, italy, japan), na.rm = TRUE))
+
+# make single column date
+globalinflation$date <- my(paste(globalinflation$month, globalinflation$year, sep = "-"))
+```
+
+
+## 3 Multiple regression
+```{r}
+# interpolate g7 average monthly inflation to daily in order to match frequency with btc data
+interpolated_g7 <- approx(globalinflation$date, globalinflation$g7, xout = btc$date)$y
+
+btc_model_cols <- data.frame(close = btc$close, inflation = interpolated_g7, date = btc$date)
+
+# multiple regression model
+btc_model <- lm(close ~ inflation + date, data = btc_model_cols)
+get_regression_table(btc_model)
+```
+
+
+### 3.1 Statistical interpretation
+
+### 3.2 Non-statistical interpretation
+
+
+## 4 Inference for multiple regression
+```{r}
+reg_points <- get_regression_points(btc_model)
+```
+
+To answer our research question, we need to test the null hypothesis "there is no relationship between
+G7 average CPI inflation the closing price of bitcoin".
+
+//TODO hypothesis equations
+
+
+
+### 4.1 Residual analysis
+```{r}
+ggplot(data = reg_points, aes(x = residual)) +
+  geom_histogram(binwidth = 3000, fill = "deepskyblue4", color = "white") +
+  labs(title = "Histogram of Residuals",
+       x = "Residuals",
+       y = "Frequency")
+```
+
+```{r}
+ggplot(data = reg_points, aes(x = close_hat, y = residual)) +
+  geom_point(color = "deepskyblue4") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Residual vs. Fitted Values",
+       x = "Fitted",
+       y = "Residual")
+```
+
+```{r}
+ggplot(data = reg_points, aes(x = inflation, y = residual)) +
+  geom_point(color = "deepskyblue4") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Residual vs. Inflation",
+       x = "Inflation",
+       y = "Residual")
+```
+
+```{r}
+ggplot(data = reg_points, aes(x = date, y = residual)) +
+  geom_point(color = "deepskyblue4") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
+  labs(title = "Residual vs. Date",
+       x = "Date",
+       y = "Residual")
+```
+
+## 5 Conclusion
+
+
+## 6 Citations and references
+
