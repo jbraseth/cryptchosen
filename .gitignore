@@ -4,3 +4,4 @@
 .venv
 docs/*.html
 python/SECRET
+output/
