@@ -33,7 +33,7 @@ library(knitr)
 library(moderndive)
 ```
 
-<img src="https://stat2.moneycontrol.com/assets/images/ms/wazirx/wazir_article_img_eight.jpg" alt="Crypto Graph" />
+<img src="../assets/images/wazir_article_img_eight.jpg" alt="Crypto Graph" onerror="this.onerror=null; this.src='https://stat2.moneycontrol.com/assets/images/ms/wazirx/wazir_article_img_eight.jpg'">
 
 
 #### Last updated on 2024-05-03
