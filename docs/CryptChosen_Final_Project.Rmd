@@ -208,6 +208,17 @@ ggplot(combined_data, aes(x = date, y = value)) +
 And lastly, Figure 6 is 2 line graphs on the same plane that directly show Bitcoin's Price and the Global Average CPI Inflation side by side. We thought it would be interesting to directly compare Bitcoin's Price and Average Inflation. Having these two values side by side can let us draw some basic correlations, and see if there seems to be any relationships between the two. If there are jumps in both in around the same time frame it could mean there is a relationship. Especially in the most recent years, we can see a major jump at around the same time. 
 
 # 3 Multiple regression
+In this section, we construct a multiple regression model to evaluate the relationship between Bitcoin's closing price (BTC) and the global inflation of fiat currency (monthly average) in G7 countries. Our model incorporates 2 numerical explanatory variables, as per the expressed permission of Dr. Oluwadare to not include a categorical variable, given the nature of the dataset.
+
+### Components of the Multiple Regression Model
+- **Dependent Variable:** Bitcoin's daily closing price (`btc$close`)
+- **Independent Variables:**
+  - **Inflation:** The interpolated daily inflation rates of the G7 countries (`interpolated_g7`). This represents the average inflation, capturing the economic climate of these countries.
+  - **Date:** This variable helps account for any trends over time in Bitcoin's closing price.
+
+### Model Fitting
+We fit the model using the `lm()` function in R, specifying Bitcoin's closing price as a function of G7 inflation and the date. This model allows us to assess how changes in inflation and time influence BTC prices.
+
 ```{r}
 # interpolate g7 average monthly inflation to daily in order to match frequency with btc data
 interpolated_g7 <- approx(globalinflation$date, globalinflation$g7, xout = btc$date)$y
@@ -221,9 +232,24 @@ get_regression_table(btc_model)
 
 
 ## 3.1 - Statistical interpretation
+<!-- TODO 04/30: Incorporate the rest of regression table values in analysis 3.1 -->
+### Interpretation of Regression Table
+The regression table provides the estimated impact of each predictor on Bitcoin’s closing price. The significant coefficients for both inflation and date indicate statistical relationships with Bitcoin prices:
+
+- **Intercept (-113,847.799):** The model predicts a substantially negative base value for Bitcoin’s closing price at the start of our analysis period, which is statistically unrealistic and suggests potential issues with data scaling, the absence of necessary contextual variables, or simply that the linear model does not suit the non-linear nature of Bitcoin price fluctuations.
+- **Inflation (Coefficient: 20,256.980):** The coefficient is extraordinarily high, suggesting that a unit increase in inflation would lead to an increase in Bitcoin's price by over $20,000. This is highly unrealistic and likely signifies overfitting or collinearity with the date or other unmeasured variables that are influencing Bitcoin's price. The strong statistical significance (p-value of 0) indicates a robust relationship, which implies that this is not a particularly useful or accurate model.
+- **Date (Coefficient: 6.979):** The positive coefficient suggests a daily increase in Bitcoin’s closing price, aligning with the observed overall upward trend in historical price data. It is, however, unrealistically smooth and steady, ignoring the known volatility in Bitcoin prices.
+
+### Tying Results to Exploratory Data Analysis (EDA)
+The exploratory data analysis highlighted Bitcoin’s price volatility and its growth trend over time, which is consistent with the positive coefficient for the date variable. During EDA, no clear, consistent relationship between inflatian rates and Bitcoin prices could be inferred, suggesting the unsophisticated model might be capturing spurious correlations.
+
+### Potential Limitations
+- **Model Misfit:** The linear regression model may not be appropriate for data with the characteristics of cryptocurrency prices, which are highly non-linear and influenced by many simultaneous external factors.
+- **Incorrect Data Handling:** The issues with the intercept and the inflation coefficient might also stem from how the data was prepared and entered into the model, suggesting potential scaling or transformation errors.
+- **Lack of Relevant Variables:** The model excludes variables that could significantly impact Bitcoin prices, such as technological changes, regulatory updates, and shifts in investor sentiment.
 
 ## 3.2 - Non-statistical interpretation
-
+<!-- TODO 3.2 -->
 
 # 4. Inference for multiple regression
 ```{r}
