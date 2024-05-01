@@ -42,11 +42,11 @@ library(moderndive)
 
 # 1. Introduction
 
-Cryptocurrency, and in particular Bitcoin, has come a long way from its mediocre rise in the early 2010's. What was once considered a waste of money, and not highly regarded, has dramatically increased in price and now is staple of the online space and modern world. As bitcoin continues its rise, it's important to consider that the global economy as a whole is declining, as inflation rates continue to climb. Our project investigates whether there's a correlation between global economic inflation and the value of Bitcoin - and if there is one, what exactly is the correlation that can be drawn?
+Cryptocurrency, and in particular Bitcoin, has come a long way from its meteoric rise in the early 2010's. What was once considered a waste of money, and not highly regarded, has dramatically increased in price and now is staple of the online space and modern world. As bitcoin continues its rise, it's important to consider that inflation rates within the global economy continue to climb. Our project investigates whether there's a correlation between global economic inflation and the value of Bitcoin - and if there is one, what exactly is the correlation that can be drawn?
 
 To answer this question, we will be using our data set derived from the CryptoCompare API<a href="https://min-api.cryptocompare.com/documentation?key=Historical&cat=dataHistoday">³</a>, which shows the price of Bitcoin and its price movements over the past ten years. CryptoCompare is an FCA benchmark administrator<a href="https://finance.yahoo.com/news/cryptocompare-gets-fca-authorization-operate-125346571.html">²</a> and is used by some of the largest companies such as Coinbase, and Binance. We will be using their dataset and analyzing Bitcoin daily closing price and trading volume variables in relation to global inflation metrics derived from per-country month-over-month changes in the Consumer Price Index (CPI). The inflation data we will be comparing it to is provided by The World Bank from their database<a href="https://www.worldbank.org/en/research/brief/inflation-database ">¹</a>. The World Bank is an exceptionally reliable source, getting the data for its datasets directly from the government agencies of each country it references. The data for this dataset was updated April 2024. 
 
-We decided to focus on the inflation of G7 countries as they have the most stable and advanced economies, account for more than a third of the global GDP<a href="https://www.bbc.com/news/world-49434667">⁴</a>, and are great points of reference of the global economy as a whole. Another thing that is important to note is that unlike most projects, we will be comparing 2 numeric values instead.
+We decided to focus on the inflation of G7 countries as they have the most stable and advanced economies, accounting for more than a third of the global GDP<a href="https://www.bbc.com/news/world-49434667">⁴</a>, and are great points of reference of the global economy as a whole. Another thing that is important to note is that unlike most projects, we will be creating a 2-numerical multiple regression model.
 
 Here is a snapshot of 5 randomly chosen rows of the data set we’ll use from the CryptoCompare dataset:
 ```{r}
@@ -256,14 +256,42 @@ The exploratory data analysis highlighted Bitcoin’s price volatility and its g
 reg_points <- get_regression_points(btc_model)
 ```
 
-To answer our research question, we need to test the null hypothesis "there is no relationship between
-G7 average CPI inflation the closing price of bitcoin".
+To answer our research question, we need to test the following null hypothesis:
+There is no relationship between G7 average CPI inflation and the closing price of Bitcoin (G7 slope = 0)
 
-//TODO hypothesis equations
+<center>
 
+<img src="../assets/svg/hyp1_null.svg" alt="Null Hypothesis 1" onerror="this.onerror=null; this.src='https://github.com/jbraseth/cryptchosen/tree/feature/final-project/assets/svg/hyp1_null.svg'">
 
+<img src="../assets/svg/hyp1_alt.svg" alt="Alternate Hypothesis 1" onerror="this.onerror=null; this.src='https://github.com/jbraseth/cryptchosen/tree/feature/final-project/assets/svg/hyp1_alt.svg'">
+
+</center>
+
+As mentioned in the statistical analysis section, our model indicates an extremely positive relationship between G7 CPI inflation and
+the closing price of Bitcoin, with a slope coefficient of **20,256.980**.
+
+Combined with a p-value of **0** and a confidence interval of **19,059.112 to 21,454.848**, our model indicates that the relationship is statistically and practically significant.
+
+As part of our multiple regression model, we can also study the relationship between time and the closing price of Bitcoin.
+To do this, we test the following null hypothesis: There is no relationship between time and the closing price of Bitcoin (Date slope = 0)
+
+<center>
+
+<img src="../assets/svg/hyp2_null.svg" alt="Null Hypothesis 2" onerror="this.onerror=null; this.src='https://github.com/jbraseth/cryptchosen/tree/feature/final-project/assets/svg/hyp2_null.svg'">
+
+<img src="../assets/svg/hyp2_alt.svg" alt="Alternate Hypothesis 2" onerror="this.onerror=null; this.src='https://github.com/jbraseth/cryptchosen/tree/feature/final-project/assets/svg/hyp2_alt.svg'">
+
+</center>
+
+Our model indicates an overall positive relationship between time and
+the closing price of Bitcoin, with a slope coefficient of **6.979**.
+
+With another p-value of **0** and a confidence interval of **6.762 to 7.196**, our model shows that this relationship is statistically and practically significant as well.
+
+However, we have mentioned previously that our model is likely not complex enough to accurately determine the relationships between the closing price of Bitcoin and potentially related explanatory variables. To explore this further, we will conduct a residual analysis.
 
 ## 4.1 - Residual analysis
+<center>
 ```{r}
 ggplot(data = reg_points, aes(x = residual)) +
   geom_histogram(binwidth = 3000, fill = "deepskyblue4", color = "white") +
@@ -272,32 +300,52 @@ ggplot(data = reg_points, aes(x = residual)) +
        y = "Frequency")
 ```
 
+The frequency of residual values with a bin width of 3,000
+<br>
+<br>
+
 ```{r}
 ggplot(data = reg_points, aes(x = close_hat, y = residual)) +
   geom_point(color = "deepskyblue4") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  labs(title = "Residual vs. Fitted Values",
+  labs(title = "Fitted Values vs. Residuals",
        x = "Fitted",
        y = "Residual")
 ```
+
+The distribution of fitted values relative to residuals
+<br>
+<br>
 
 ```{r}
 ggplot(data = reg_points, aes(x = inflation, y = residual)) +
   geom_point(color = "deepskyblue4") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  labs(title = "Residual vs. Inflation",
+  labs(title = "G7 CPI Inflation vs. Residuals",
        x = "Inflation",
        y = "Residual")
 ```
+
+The distribution of G7 CPI inflation values relative to residuals
+<br>
+<br>
 
 ```{r}
 ggplot(data = reg_points, aes(x = date, y = residual)) +
   geom_point(color = "deepskyblue4") +
   geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-  labs(title = "Residual vs. Date",
+  labs(title = "Date vs. Residuals",
        x = "Date",
        y = "Residual")
 ```
+
+The distribution of dates relative to residuals
+</center>
+<br>
+<br>
+
+While our residuals seem to be somewhat normally distributed, there is obvious linear patterning visible in the residuals when graphed relative to the fitted values and explanatory variables. This is another indicator that our model is not suitable for regression and inference. As mentioned in the regression section, there are likely far more explanatory variables influencing the closing price of Bitcoin, and it is extremely unlikely that a simple linear regression model such as the one we created would be able to accurately perform inference for this complicated set of relationships.
+
 
 # 5. Conclusion
 
