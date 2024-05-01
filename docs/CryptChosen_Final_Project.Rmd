@@ -232,7 +232,6 @@ get_regression_table(btc_model)
 
 
 ## 3.1 - Statistical interpretation
-<!-- TODO 04/30: Incorporate the rest of regression table values in analysis 3.1 -->
 ### Interpretation of Regression Table
 The regression table provides the estimated impact of each predictor on Bitcoin’s closing price. The significant coefficients for both inflation and date indicate statistical relationships with Bitcoin prices:
 
@@ -249,7 +248,12 @@ The exploratory data analysis highlighted Bitcoin’s price volatility and its g
 - **Lack of Relevant Variables:** The model excludes variables that could significantly impact Bitcoin prices, such as technological changes, regulatory updates, and shifts in investor sentiment.
 
 ## 3.2 - Non-statistical interpretation
-<!-- TODO 3.2 -->
+In our study, we attempted to analyze how changes in global economic inflation (specifically from G7 countries) and the progression of time relate to the fluctuating price of Bitcoin. Here’s a straightforward breakdown of what our analysis found and what it might mean for someone without a statistical background:
+
+- **Impact of Inflation on Bitcoin Prices:** Our model suggested a strong influence of inflation on Bitcoin prices, implying that as inflation in G7 countries increases, so does the price of Bitcoin. In numerical terms, our analysis indicated that for every point increase in inflation, the price of Bitcoin could rise by over $20,000. While this number might sound substantial, it's important to approach this finding with skepticism due to the overly simplified nature of our model and the unlikely magnitude of impact.
+- **Time Influence on Bitcoin Prices:** Additionally, the model predicted that Bitcoin's price has a tendency to increase slightly every day, independent of other factors. This aligns with the general observation that Bitcoin's price has trended upwards over the years, but the model simplifies the fluctuations that occur from day to day and month to month.
+Understanding Model Limitations: It's crucial to note that these findings, while interesting, are derived from a very simplified model that doesn't capture the plethora of factors that can influence Bitcoin prices—such as innovation, regulations, consumer confidence, and the Bitcoin halving. Therefore, the precision and reliability of these predictions are not high.
+- **Reliability of Predictions:** Given the unrealistic coefficients and high standard errors (indicating large potential errors in prediction), the predictions from this model should not be used as a sole basis for investment decisions or understanding the cryptocurrency market. The actual market conditions are far more complex than what our simple model can account for.
 
 # 4. Inference for multiple regression
 ```{r}
