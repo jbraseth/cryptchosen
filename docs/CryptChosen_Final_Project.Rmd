@@ -274,7 +274,7 @@ There is no relationship between G7 average CPI inflation and the closing price 
 As mentioned in the statistical analysis section, our model indicates an extremely positive relationship between G7 CPI inflation and
 the closing price of Bitcoin, with a slope coefficient of **20,256.980**.
 
-Combined with a p-value of **0** and a confidence interval of **19,059.112 to 21,454.848**, our model indicates that the relationship is statistically and practically significant.
+Combined with a p-value of **0** and a confidence interval of **19,059.112 to 21,454.848**, our model indicates that the relationship is statistically and practically significant. As a result, we can reject the first null hypothesis.
 
 As part of our multiple regression model, we can also study the relationship between time and the closing price of Bitcoin.
 To do this, we test the following null hypothesis: There is no relationship between time and the closing price of Bitcoin (Date slope = 0)
@@ -290,7 +290,7 @@ To do this, we test the following null hypothesis: There is no relationship betw
 Our model indicates an overall positive relationship between time and
 the closing price of Bitcoin, with a slope coefficient of **6.979**.
 
-With another p-value of **0** and a confidence interval of **6.762 to 7.196**, our model shows that this relationship is statistically and practically significant as well.
+With another p-value of **0** and a confidence interval of **6.762 to 7.196**, our model shows that this relationship is statistically and practically significant as well. As a result, we can reject the second null hypothesis.
 
 However, we have mentioned previously that our model is likely not complex enough to accurately determine the relationships between the closing price of Bitcoin and potentially related explanatory variables. To explore this further, we will conduct a residual analysis.
 
