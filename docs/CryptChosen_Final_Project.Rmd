@@ -355,16 +355,28 @@ While our residuals seem to be somewhat normally distributed, there is obvious l
 
 ## 5.1 - Conclusions
 
-Conclusion. Was there a correlation?
+Was there a correlation? Looking at all of our model different models indicates that there was a statistically significant and practically significant relationship. It can be inferred that as inflation increases in g7 countries, the price of Bitcoin increases. This could be from a variety of factors, such as distrust of fiat currencies, the more accepted use of Bitcoin, or advances in the block chain technology that powers the cryptocurrency. It hard to pinpoint exactly what the correlation is due to and one of the biggest reasons for that is our limitations.
 
 ## 5.2 - Limitations
 
-Limitations we had
+To start we had too few explanatory variables, and a simple regression method. Initially, we had only a small number of explanatory variables available for analysis especially when looking at the inflation data. This restricted our ability to explore complex relationships between variables. As for the regression method, we employed a basic regression method. While this approach is straightforward, it may not capture all nuances in the data. More sophisticated techniques could have made it so our models were way more accurate than they turned out to be.
 
+ 
 ## 5.3 - Further questions
 
-Questions the data provokes
+What other explanatory variables might be involved in a more accurate model? Would another regression method be better suited to model this relationship? If not, could we somehow find another data set that allowed us to have a more comfortable number of explanatory variables? Additionally, what else could coincide with inflation that would affect the price of Bitcoin? Is there another variable that has an effect on both?
 
+## 5.4 - Who did each part?
+
+Steven - Intro, Exploratory data analysis, Conclusion, and references
+
+Ethan - Residual analysis
+
+Josh - Mutiple regression
+
+<br>
+
+We think this is a fair division of work, as parts 3 and 4 (Residual analysis and Multiple regression, respectively) require extra effort
 
 # 6. Citations and References
 A Global Database of Inflation. (n.d.). World Bank. https://www.worldbank.org/en/research/brief/inflation-database
